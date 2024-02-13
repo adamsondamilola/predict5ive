@@ -95,7 +95,7 @@ else{
             //'username' => 'required|string|between:2,25',
             'first_name' => 'required|string|between:2,50',
             'last_name' => 'required|string|between:2,50',
-            //'country' => 'required|string|between:2,50',
+            //'country' => 'nullable|string',
 //            'package' => 'required|string|between:2,50',
             //'phone' => 'required|string|between:7,15',
             'email' => 'required|string|email|max:100|unique:users',
@@ -118,13 +118,14 @@ else{
         else if ($request->last_name == null) {
             return response()->json(['status' => 0, 'message' => 'Enter last name'], 401);
         }
+        /*else if ($request->country == "") {
+            return response()->json(['status' => 0, 'message' => 'Country not selected'], 401);
+        }*/
         /*
         else if($ifUsernameExists > 0){
             return response()->json(['status' => 0, 'message' => 'Username already in Use'], 401);
         }
-        else if ($request->country == null) {
-            return response()->json(['status' => 0, 'message' => 'Country not selected'], 401);
-        }
+        
         else if (strpbrk($request->username, ' ') !== false) {
             return response()->json(['status' => 0, 'message' => 'Username should not have white space'], 401);
         }

@@ -125,7 +125,7 @@ Transactions::create([
 
       }
       else{
-        return $this->res(0, 'Record not found', 200);
+        return $this->res(0, 'Message not found', 200);
       }
 
       }
@@ -137,14 +137,31 @@ Transactions::create([
             'platform' => 'required|string|between:2,50',
             'device_id' => 'required|string|between:2,500',
                     ]);
+            
+            $batch_number = 1;
+            $devices = CloudMessagingUsers::Where('status', 1)->orderBy('id', 'desc')->first();
+            if($devices != null){
+                if(CloudMessagingUsers::Where('batch_number', $devices->batch_number)->count() < 1000){
+                    $batch_number = $devices->batch_number;
+                }
+                else {
+                    $batch_number += $devices->batch_number;
+                }
+            }
+                    
+                    //delete duplicate email
+        /*if(CloudMessagingUsers::Where('device_id', '!=', $request->device_id)->Where('email', $request->email)->count() > 0){
+            //return $this->res(0, 'Device already created', 400);
+            CloudMessagingUsers::Where('device_id', '!=', $request->device_id)->Where('email', $request->email)->delete();
+        } */
 
          if($validator->fails()){
             //return response()->json($validator->errors()->toJson(), 400);
             return $this->res(0, 'Failed to create device id. Please try again', 400);
         }
-        else if(CloudMessagingUsers::Where('email', $request->email)->count() > 0 && !empty($request->email)){
+        /* else if(CloudMessagingUsers::Where('email', $request->email)->count() > 0 && !empty($request->email)){
             return $this->res(0, 'User Device already created', 400);
-        }
+        }*/
 
         else if(CloudMessagingUsers::Where('device_id', $request->device_id)->count() > 0){
             return $this->res(0, 'Device already created', 400);
@@ -158,9 +175,27 @@ Transactions::create([
             'email' => $request->email,
             'platform' => $request->platform,
             'device_id' => $request->device_id,
+            'batch_number' => $batch_number
         ]);
 
         return $this->res(1, 'Device registration id created', 200);
     }
+    
+    //list announcements
+public function announcements(Request $request){
+
+
+    $ann = Announcements::orderBy('id', 'desc')->take(20)->get();
+
+  if($ann){
+
+    return $this->res(1, $ann, 200);
+
+  }
+  else{
+    return $this->res(0, 'No message found', 200);
+  }
+
+  }
 
 }

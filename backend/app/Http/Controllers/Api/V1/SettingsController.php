@@ -19,9 +19,9 @@ class SettingsController extends Controller
         $res = new Response;
         return $res->res($status, $message, $code);
     }
-
+ 
     public function appVersionControl(Request $request){
-        return response()->json(['status' => 1, 'androidVersion' => '1.1.0', 'iosVersion' => '1.1.0', 'android_link' => 'https://play.google.com/store/apps/details?id=com.cpromoter.predict5ive', 'ios_link' => 'https://'], 200);
+        return response()->json(['status' => 1, 'androidVersion' => '2.2.6', 'iosVersion' => '2.2.6', 'android_link' => 'https://play.google.com/store/apps/details?id=com.cpromoter.predict5ive', 'ios_link' => 'https://'], 200);
     }
 
     public function Packages(Request $request)

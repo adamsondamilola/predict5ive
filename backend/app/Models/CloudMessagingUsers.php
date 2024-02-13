@@ -12,6 +12,7 @@ class CloudMessagingUsers extends Model
         'platform',
         'email',
         'device_id',
+        'batch_number',
         'status'
     ];
 }

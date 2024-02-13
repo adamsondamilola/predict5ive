@@ -52,10 +52,14 @@ Route::group([
     Route::get('/{id}/get_game', [GamesController::class, 'getGameById']);
     Route::get('/{id}/{voteType}/game_vote', [GamesController::class, 'voteById']);
     Route::get('/get_games', [GamesController::class, 'getGames']);
+    Route::get('/old_games', [GamesController::class, 'oldGames']);
+    Route::get('/old_games/premium', [GamesController::class, 'oldPremiumGames']);
     Route::get('/pending_games', [GamesController::class, 'pendingGames']);
     Route::get('/admin_get_games', [GamesController::class, 'adminGetGames']);
     Route::get('/{id}/{actionType}/admin_approve_game', [GamesController::class, 'adminApproveGame']);
-    Route::get('/{time}/get_games', [GamesController::class, 'getGamesByTime']);
+    //Route::get('/{time}/get_games', [GamesController::class, 'getGamesByTime']);
+    Route::get('/{time}/get_games_new', [GamesController::class, 'getGamesByTime']);
+    Route::get('/{time}/get_games/premium', [GamesController::class, 'getPremiumGamesByTime']);
     Route::get('/{id}/delete_game', [GamesController::class, 'deleteGameById']);
 
     Route::get('/user_get_games', [GamesController::class, 'userGetGames']);
@@ -94,6 +98,7 @@ Route::group([
     Route::get('/wallet', [UsersController::class, 'wallet']);
     Route::post('/activate-package', [UsersController::class, 'activatePackage']);
     Route::get('/announcement', [UsersController::class, 'announcement']);
+    Route::get('/announcements', [UsersController::class, 'announcements']);
     Route::post('/push/notification/create', [UsersController::class, 'createPushNotification']);
 });
 
@@ -136,9 +141,16 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'v1/admin'
 ], function ($router) {
+    Route::get('/{time}/get_games', [AdminController::class, 'getGamesByTime']);
     Route::get('/announcement/list', [AdminController::class, 'listAnnouncements']);
+        Route::get('/announcement/groups', [AdminController::class, 'announcementGroups']);
     Route::post('/announcement/add', [AdminController::class, 'addAnnouncement']);
     Route::get('/{id}/announcement/delete', [AdminController::class, 'deleteAnnouncement']);
         Route::post('/push-notification/send', [AdminController::class, 'pushNotification']);
+        
+        
+         Route::get('/booking/codes', [AdminController::class, 'listBookingCodes']);
+    Route::post('/booking/add', [AdminController::class, 'addBookingCode']);
+    Route::get('/{id}/booking/delete', [AdminController::class, 'deleteBookingCode']);
 });
 
