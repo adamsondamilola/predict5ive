@@ -77,7 +77,8 @@ const loginAction = () =>{
                     if (json.status == 1) {
                         {toast.success(json.message)} 
                         setLoading(false)
-                        
+                        alert(json.message.original.access_token)
+                        localStorage.setItem('access_token', json.message.original.access_token);
                         setCookie("token", json.message.original.access_token, {
                             path: "/"
                           });

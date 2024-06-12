@@ -2,9 +2,9 @@ import React, { Component, useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';  
 import { useCookies } from 'react-cookie';
-import Loading from '../../../Utilities/Loading';
 import { Link } from 'react-router-dom';
 import TitleSection from '../../layout-components/TitleSection';
+import Loading from '../../../Utilities/Loading';
 
 const AddGame = () => {
 
@@ -101,6 +101,8 @@ const AddGame = () => {
     const [league, setLeague] = useState(null)
     const [homeTeam, setHomeTeam] = useState(null)
     const [awayTeam, setAwayTeam] = useState(null)
+    const [homeLogo, setHomeLogo] = useState(null)
+    const [awayLogo, setAwayLogo] = useState(null)
     const [prediction, setPrediction] = useState(null)
     const [gameDate, setGameDate] = useState(null)
     const [gameTime, setGameTime] = useState(null)
@@ -110,6 +112,7 @@ const AddGame = () => {
     const [odds, setOdds] = useState(null);
       const [winOrLose, setWinOrLose] = useState(0)
     const [isPremium, setIsPremium] = useState(0)
+    const [isFeatured, setIsFeatured] = useState(0)
 
     
 
@@ -130,6 +133,8 @@ const AddGame = () => {
                         league: league,
                         home_team: homeTeam,
                         away_team: awayTeam,
+                        home_logo: homeLogo,
+                        away_logo: awayLogo,
                         prediction: prediction,
                         game_date: gameDate,
                         game_time: gameTime,
@@ -138,7 +143,8 @@ const AddGame = () => {
                         odds: odds,
                         status: status_,
                         win_or_lose: winOrLose,
-                        is_premium: isPremium
+                        is_premium: isPremium,
+                        is_featured: isFeatured
             
              })
         };
@@ -161,12 +167,63 @@ const AddGame = () => {
                     .finally(() => setLoading(false));
     }
     
+    const [csvFile, setCsvFile] = useState(null);
+    const importGame = async () =>{
+      setLoading(true)
+      var formData = new FormData();
+      formData.append('file', csvFile);
+      formData.append('_method', 'post');
+      const postOptions = {
+          method: 'POST',
+          headers: {
+              'Authorization': 'Bearer ' +token    
+          },
+          body: formData
+           
+      };
+  
+      fetch(endPoint + 'game/import_game', postOptions)
+                  .then((response) => response.json())
+                  .then((json) => {
+                      if (json.status == 1) {
+                          getGames()
+                          {toast.success(json.message)} 
+                          setLoading(false)                            
+  
+              }
+                      else {
+                          {toast.error(json.message)} 
+                          setLoading(false)
+                      }    
+                  })
+                  .catch((error) => console.error(error))
+                  .finally(() => setLoading(false));
+  }
+
+
     useEffect(()=>{
 	   GetUserDetails()
        getGames()
     },[])
 
 return <>
+<TitleSection title="Export CSV Game"/>
+<div className='row'>
+<div class="col-12 m-2">
+<input type="file" 
+                            name="file"
+                            onChange={(e) => setCsvFile(e.target.files[0])}
+                            accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                            className="form-control" />
+</div>
+<div class="col-12 m-2">
+<button disabled={!csvFile || isLoading} class="default-btn register" onClick={() => importGame()} type="button">
+                                
+                                {isLoading? <Loading /> : <i className='fa fa-upload'></i>}
+                            </button>
+
+</div>
+</div>
 
 <TitleSection title="Add Game"/>
         
@@ -185,6 +242,12 @@ return <>
   </div>
   <div class="col-6">
   <input className='form-control m-2' placeholder='Away Team' value={awayTeam} onChange={e => setAwayTeam(e.target.value)}  />
+  </div>
+  <div class="col-6">
+  <input className='form-control m-2' placeholder='Home Logo' value={homeLogo} onChange={e => setHomeLogo(e.target.value)}  />
+  </div>
+  <div class="col-6">
+  <input className='form-control m-2' placeholder='Away Logo' value={awayLogo} onChange={e => setAwayLogo(e.target.value)}  />
   </div>
   <div class="col-6">
   <input className='form-control m-2' placeholder='Prediction' value={prediction} onChange={e => setPrediction(e.target.value)}  />
@@ -222,6 +285,12 @@ return <>
     <select className='form-control m-2' onChange={e => setIsPremium(e.target.value)}>
     <option value={0}>Free</option>
     <option value={1}>Premium</option>
+    </select>
+  </div>
+  <div class="col-6">
+    <select className='form-control m-2' onChange={e => setIsFeatured(e.target.value)}>
+    <option value={0}>Not Featured</option>
+    <option value={1}>Featured</option>
     </select>
   </div>
   <div class="col-6">

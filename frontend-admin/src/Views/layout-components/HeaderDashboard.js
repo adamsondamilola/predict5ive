@@ -112,13 +112,13 @@ const logOut = () => {
 							<a className="nav-link" href="/admin/add_game"><i className="fa fa-plus-circle sidemenu-icon"></i><span className="sidemenu-label">Add Game</span> &nbsp;&nbsp;&nbsp;&nbsp;</a>
 						</li>
 						<li className="nav-item">
-							<a className="nav-link" href="/admin/add_post"><i className="fa fa-plus sidemenu-icon"></i><span className="sidemenu-label">Add Post</span> &nbsp;&nbsp;&nbsp;&nbsp;</a>
+							<a className="nav-link" href="/content/new"><i className="fa fa-plus sidemenu-icon"></i><span className="sidemenu-label">Add Post</span> &nbsp;&nbsp;&nbsp;&nbsp;</a>
+						</li>
+						<li className="nav-item">
+							<a className="nav-link" href="/content/all"><i className="fa fa-pen sidemenu-icon"></i><span className="sidemenu-label">Posts</span> &nbsp;&nbsp;&nbsp;&nbsp;</a>
 						</li>
 						<li className="nav-item">
 							<a className="nav-link" href="/admin/games"><i className="fa fa-circle sidemenu-icon"></i><span className="sidemenu-label">Games</span> &nbsp;&nbsp;&nbsp;&nbsp;</a>
-						</li>
-						<li className="nav-item">
-							<a className="nav-link" href="/admin/posts"><i className="fa fa-pen sidemenu-icon"></i><span className="sidemenu-label">Posts</span> &nbsp;&nbsp;&nbsp;&nbsp;</a>
 						</li>
 						<li className="nav-item">
 							<a className="nav-link" href="/admin/announcements"><i className="fa fa-list sidemenu-icon"></i><span className="sidemenu-label">Announcements</span> &nbsp;&nbsp;&nbsp;&nbsp;</a>

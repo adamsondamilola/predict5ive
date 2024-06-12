@@ -10,6 +10,7 @@ use App\Models\GameVotes;
 use App\Models\Packages;
 use App\Models\Wallets;
 use App\Models\Transactions;
+use App\Models\BookingCodes;
 use App\Services\Response;
 use App\Http\Controllers\Api\V1\TelegramBotMessengerController;
 use Validator;
@@ -22,7 +23,7 @@ use Validator;
 class GamesController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['getGames', 'getGameById', 'oldGames', 'getGamesByTime']]);
+        $this->middleware('auth:api', ['except' => ['getGames', 'getGameById', 'oldGames', 'getGamesByTime', 'listBookingCodes']]);
     }
 
     public function res($status, $message, $code)
@@ -30,7 +31,7 @@ class GamesController extends Controller
         $res = new Response;
         return $res->res($status, $message, $code);
     }
-    
+
     public function TelegramBotMessenger($chat_id, $msge)
     {
 
@@ -47,8 +48,8 @@ class GamesController extends Controller
             'league' => 'required|string',
             'home_team' => 'required|string',
             'away_team' => 'required|string',
-            'home_logo' => 'string',
-            'away_logo' => 'string',
+            'home_logo' => 'string|nullable',
+            'away_logo' => 'string|nullable',
             'prediction' => 'required|string',
             'game_type' => 'required|string',
             'game_date' => 'required|string',
@@ -79,7 +80,7 @@ class GamesController extends Controller
         $games = Games::create(array_merge(
             $validator->validated()
         ));
-        
+
         //if game is today, send it to telegram as well
         if($request->game_date == date('Y-m-d')){
             //send message to telegram
@@ -92,7 +93,7 @@ class GamesController extends Controller
             $game .= "Time: ".$request->game_time."(+1 GMT)\n";
         $this->TelegramBotMessenger('predict_5ive', $game);
         }
-        
+
         return $this->res(1, "New game posted   ", 200);
     }
 
@@ -104,8 +105,8 @@ class GamesController extends Controller
             'league' => 'required|string',
             'home_team' => 'required|string',
             'away_team' => 'required|string',
-            'home_logo' => 'string',
-            'away_logo' => 'string',
+            'home_logo' => 'string|nullable',
+            'away_logo' => 'string|nullable',
             'prediction' => 'required|string',
             'game_type' => 'required|string',
             'game_date' => 'required|string',
@@ -144,7 +145,7 @@ class GamesController extends Controller
         $games->win_or_lose = $request->win_or_lose;
         $games->is_premium = $request->is_premium;
         $games->save();
-        
+
         //if game is update, send it to telegram as well
         if($games){
             //send message to telegram
@@ -158,8 +159,8 @@ class GamesController extends Controller
             $game .= "Time: ".$request->game_time."(+1 GMT)\n";
         $this->TelegramBotMessenger('predict_5ive', $game);
         }
-        
-        
+
+
         return $this->res(1, "Game updated", 200);
     }
 
@@ -217,7 +218,7 @@ class GamesController extends Controller
         $games = Games::Where('status', 0)->orderBy('game_date', 'desc')->take(20)->get();
         return $this->res(1, $games, 200);
     }
-    
+
     public function oldGames(Request $request){
 
         $games = Games::Where('status', 1)->Where('is_premium', 0)->Where('result', '!=', null)->orderBy('game_date', 'desc')->take(50)->get();
@@ -285,15 +286,15 @@ else{
         if($time == "today"){
             $Games = Games::Where('status', 1)->Where('is_premium', 0)->Where('game_date', $today_date);
             //$Games = Games::Where('status', 1)->Where('game_date', $today_date);
-            
+
             $games = $Games->orderBy('game_date', 'desc')->get();
             if($games->count() < 1) return $this->res(0, "Our experts are still working on new games. We will notify you!", 401);
             else return $this->res(1, $games, 200);
         }
         else if($time == "tomorrow"){
             $Games = Games::Where('status', 1)->Where('is_premium', 0)->Where('game_date', $tomorrow_date);
-            //$Games = Games::Where('status', 1)->Where('game_date', $tomorrow_date); 
-            
+            //$Games = Games::Where('status', 1)->Where('game_date', $tomorrow_date);
+
             $games = $Games->orderBy('game_date', 'desc')->get();
             if(empty($Games) || $Games->count() < 1) {
                 return $this->res(0, "Our experts are still working on new games. We will notify you!", 401);
@@ -314,7 +315,7 @@ else{
         }
 
     }
-    
+
         public function getPremiumGamesByTime(Request $request, $time){
         $today_date = date('Y-m-d');
         $yesterday_date = date('Y-m-d', time() - 60*60*24);
@@ -411,16 +412,16 @@ else{
             GameVotes::Where('username', $username)
             ->Where('game_id', $id)
             ->first();
-            
+
             $gam = Games::Where('id', $id)->Where('result', null)->first();
-                
+
                 if($gam == null){
                 return $this->res(0, "Sorry, you cannot voted on this game. Vote today or tomorrow games.", 401);
                 }
-            
+
             if($game_clicks == null){
-                
-                
+
+
                 if($voteType == "upvote"){
                      GameVotes::create([
                         'username' => $username,
@@ -539,6 +540,26 @@ if($games->count() > 4){
         return $this->res(1, "New game posted but we will review before approval.", 200);
     }
 
+
+    //list BookingCodes for all
+public function listBookingCodes(Request $request){
+
+    $ann = BookingCodes::Where('status', 1)
+    ->Where('date_posted', '!=', null)->
+    orderBy('id', 'desc')
+    ->take(100)
+    ->get();
+
+  if($ann){
+
+    return $this->res(1, $ann, 200);
+
+  }
+  else{
+    return $this->res(0, 'Record not found', 200);
+  }
+
+  }
 
 
 }

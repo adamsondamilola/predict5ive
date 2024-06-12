@@ -12,6 +12,7 @@ class Posts extends Model
     protected $fillable = [
         'username',
         'post_title',
+        'slug',
         'post_image',
         'post_content',
         'post_date',

@@ -35,6 +35,13 @@ import Faqs from "./Views/dashboard-components/user/Faq";
 import Account from "./Views/dashboard-components/user/Account";
 import PaymentOptions from "./Views/dashboard-components/user/PaymentOptions";
 import BookingCodes from "./Views/dashboard-components/admin/BookingCodes";
+import ViewContent from "./Views/post-components/viewContent";
+import AllContents from "./Views/post-components/allContents";
+import FilterContents from "./Views/post-components/filterContents";
+import FilterAllContents from "./Views/post-components/filterAllContents";
+import CreateContent from "./Views/post-components/createContent";
+import PendingContents from "./Views/post-components/pendingContents";
+import { ToastContainer } from "react-toastify";
 function App() {
   return (
     <BrowserRouter>
@@ -64,6 +71,17 @@ function App() {
         <Route path="*" element={<DashboardPageNotFound />} />
       </Route>
 
+      <Route path="/content" element={<LayoutDashboard />}> 
+      <Route path="/content/:userId/:id/:slug" element={<ViewContent />} />
+      <Route path="/content/:id/:slug" element={<ViewContent />} />
+      <Route path="/content/all" element={<AllContents />} />
+      <Route path="/content/filter" element={<FilterContents />} />
+      <Route path="/content/filter/all" element={<FilterAllContents />} />
+      <Route path="/content/new" element={<CreateContent />} />
+      <Route path="/content/pending" element={<PendingContents />} />
+      <Route path="*" element={<DashboardPageNotFound />} />
+      </Route>
+
       <Route path="/user" element={<UserLayoutDashboard />}> 
       <Route path="/user/dashboard" element={<DashboardUser />} />
       <Route path="/user/referrals" element={<Referrals />} />
@@ -81,6 +99,7 @@ function App() {
       </Route>
 
       </Routes>
+      <ToastContainer/>
       </BrowserRouter>
   );
 }

@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\V1\VendorsController;
 use App\Http\Controllers\Api\V1\WalletController;
 use App\Http\Controllers\Api\V1\CronJobsController;
 use App\Http\Controllers\Api\V1\AdminController;
+use App\Http\Controllers\Api\V1\AiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -47,6 +48,8 @@ Route::group([
     'prefix' => 'v1/game'
 ], function ($router) {
     Route::post('/new_game', [GamesController::class, 'newGame']);
+    Route::get('/bookings', [GamesController::class, 'listBookingCodes']);
+    Route::post('/predict', [AiController::class, 'predictGameRequest']);
     Route::post('/update_game', [GamesController::class, 'updateGame']);
     Route::post('/update_game_outcome', [GamesController::class, 'updateGameOutcome']);
     Route::get('/{id}/get_game', [GamesController::class, 'getGameById']);
@@ -71,9 +74,12 @@ Route::group([
     'prefix' => 'v1/post'
 ], function ($router) {
     Route::post('/new_post', [PostController::class, 'newPost']);
+    Route::post('/upload_image', [PostController::class, 'uploadContentThumbnail']);
     Route::post('/update_post', [PostController::class, 'updatePost']);
-    Route::get('/{id}/get_post', [PostController::class, 'getPostById']);
+    Route::get('/read/{id}/{slug}', [PostController::class, 'getPostById']);
     Route::get('/get_posts', [PostController::class, 'getPosts']);
+    Route::get('/get_recent_posts', [PostController::class, 'getRecentPosts']);
+    Route::get('/get_random_posts', [PostController::class, 'getRandomPosts']);
     Route::get('/{time}/get_posts', [PostController::class, 'getPostsByTime']);
     Route::get('/{id}/delete_post', [PostController::class, 'deletePostById']);
 });
@@ -147,10 +153,12 @@ Route::group([
     Route::post('/announcement/add', [AdminController::class, 'addAnnouncement']);
     Route::get('/{id}/announcement/delete', [AdminController::class, 'deleteAnnouncement']);
         Route::post('/push-notification/send', [AdminController::class, 'pushNotification']);
-        
-        
-         Route::get('/booking/codes', [AdminController::class, 'listBookingCodes']);
-    Route::post('/booking/add', [AdminController::class, 'addBookingCode']);
-    Route::get('/{id}/booking/delete', [AdminController::class, 'deleteBookingCode']);
+
+
+        Route::get('/booking/codes', [AdminController::class, 'listBookingCodes']);
+        Route::get('/user/booking-codes', [AdminController::class, 'listUserBookingCodes']);
+        Route::post('/booking/add', [AdminController::class, 'addBookingCode']);
+        Route::get('/{id}/booking/delete', [AdminController::class, 'deleteBookingCode']);
+        Route::get('/{id}/booking/approve', [AdminController::class, 'approveBookingCode']);
 });
 

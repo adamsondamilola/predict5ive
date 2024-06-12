@@ -99,6 +99,28 @@ const BookingCodes = () => {
         
     }   
 
+    const approveAction = (id) => {
+      setLoading(true)
+      if(window.confirm('Are you sure you want to approve Booking Code?')){
+        fetch(process.env.REACT_APP_MAIN_API +'admin/'+ id+'/booking/approve', options)
+        .then((response) => response.json())
+        .then((json) => {
+            if (json.status == 1) {
+              getBookingCodes()
+              {toast.success(json.message)} 
+              setLoading(false)
+            }else{
+              {toast.error(json.message)}
+            }
+        })
+        .catch((error) => console.error(error))
+        .finally(() => setLoading(false));
+      }else{
+        //
+      }
+      
+  }   
+
       const GetUserDetails = () => {
          
             fetch(process.env.REACT_APP_MAIN_API + 'auth/user-profile', options)
@@ -188,11 +210,18 @@ useEffect( () => {
                {servicesList.map(sr =>
                  <tr>
                    <td>{sr.bookmaker}</td>
-                   <td>{sr.code}</td>
-                   {sr.status === 0 ? <td class="text-end text-danger">Inactive</td> : null}
+                   <td>{sr.code} - ({sr.odds})</td>
+                   {sr.status === 0 ? <td class="text-end text-danger">Inactive  
+                   <span class="text-muted text-nowrap">
+                   <i onClick={()=>approveAction(sr.id)} className='fa fa-check text-success'> Approve</i> </span>
+                   </td> 
+                   : 
+                   null
+                   }
+
                              {sr.status === 1 ? <td class="text-end text-success">Live</td> : null}
                   <td><span class="text-muted text-nowrap">
-                   <i onClick={()=>deleteAction(sr.id)} className='fa fa-times text-danger'> delete</i> </span> </td>
+                   <i onClick={()=>deleteAction(sr.id)} className='fa fa-times text-danger'> Delete</i> </span> </td>
                    </tr>
                )}
                </tbody>

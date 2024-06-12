@@ -29,7 +29,7 @@ class AdminController extends Controller
         $res = new Response;
         return $res->res($status, $message, $code);
     }
-    
+
     public function TelegramBotMessenger($chat_id, $msge)
     {
 
@@ -37,7 +37,7 @@ class AdminController extends Controller
         $send->sendTelegramMessage($chat_id, $msge);
 
     }
-    
+
         public function getGamesByTime(Request $request, $time){
         $today_date = date('Y-m-d');
         $yesterday_date = date('Y-m-d', time() - 60*60*24);
@@ -45,14 +45,14 @@ class AdminController extends Controller
 
         if($time == "today"){
             $Games = Games::Where('status', 1)->Where('game_date', $today_date);
-            
+
             $games = $Games->orderBy('game_date', 'desc')->get();
             if($games->count() < 1) return $this->res(0, "Our experts are still working on new games. We will notify you!", 401);
             else return $this->res(1, $games, 200);
         }
         else if($time == "tomorrow"){
-            $Games = Games::Where('status', 1)->Where('game_date', $tomorrow_date); 
-            
+            $Games = Games::Where('status', 1)->Where('game_date', $tomorrow_date);
+
             $games = $Games->orderBy('game_date', 'desc')->get();
             if(empty($Games) || $Games->count() < 1) {
                 return $this->res(0, "Our experts are still working on new games. We will notify you!", 401);
@@ -72,20 +72,20 @@ class AdminController extends Controller
         }
 
     }
-    
+
 
 /////////////////// Announcement /////////////////////
 
 //list announcements
 public function announcementGroups(Request $request){
-    
+
     /*
     $allDevices = CloudMessagingUsers::Where('status', 1)->Orderby('id', 'desc')->take(300)->distinct()->get(['device_id']);
 
         if($allDevices != null){
         $ids = "";
 foreach ($allDevices as $div){
-$ids .= $div->device_id. "," ; 
+$ids .= $div->device_id. "," ;
 }
 $ids = substr($ids, 0, -1);
 $ids = trim($ids);
@@ -116,14 +116,14 @@ return $ids_array;
 
 //list announcements
 public function listAnnouncements(Request $request){
-    
+
     /*
     $allDevices = CloudMessagingUsers::Where('status', 1)->Orderby('id', 'desc')->take(300)->distinct()->get(['device_id']);
 
         if($allDevices != null){
         $ids = "";
 foreach ($allDevices as $div){
-$ids .= $div->device_id. "," ; 
+$ids .= $div->device_id. "," ;
 }
 $ids = substr($ids, 0, -1);
 $ids = trim($ids);
@@ -158,20 +158,20 @@ public function addAnnouncement(Request $request){
       'message' => 'required|string|max:1000',
       'batch_number' => 'required|numeric|max:1000',
     ]);
-    
-    
-          
+
+
+
 
     if (auth()->user()->account_type != 'Admin') {
         return $this->res(0, 'Unauthorized!', 401);
     }
 
-    
+
 
 
 //insert announcement.
 else if($request->batch_number == 0){
-    
+
     $ann = Announcements::Where('status', 1)
     ->Where('message', $request->message)
     ->Where('status', 1);
@@ -183,7 +183,7 @@ else if($request->batch_number == 0){
             else if($ann->first()){
                 return $this->res(0, 'Announcement already exists!', 401);
           }
-    
+
     //disable other active announcement
     $ann = Announcements::Where('status', 1)->first();
 if($ann != null){
@@ -196,26 +196,26 @@ if($ann != null){
     'username' => auth()->user()->username,
     'subject' => $request->subject,
     'message' => $request->message
-        ]); 
-        
+        ]);
+
         //send message to telegram
         $this->TelegramBotMessenger('predict_5ive', $request->message);
-        
+
         return $this->res(1, 'Announcement Posted!', 200);
 }
 
 
-       
+
        //add push notification to announcement
              //  $allDevices = CloudMessagingUsers::Where('status', 1)->get();
 //$allDevices = CloudMessagingUsers::Where('status', 1)->distinct()->get(['device_id']);
 $allDevices = CloudMessagingUsers::Where('platform', 'firebase')->Where('status', 1)->Where('batch_number', $request->batch_number)->get(['device_id']);
 
         if($allDevices != null){
-            
+
 /*
             foreach ($allDevices as $div){
-//$ids .= $div->device_id. "," ; 
+//$ids .= $div->device_id. "," ;
 $ids_array = preg_split("/[,]/",$div->device_id);
  $data = [
     'notification' => array(
@@ -254,14 +254,14 @@ $url = "https://fcm.googleapis.com/fcm/send";
             $update->save();
         }
         //return $this->res(1, 'Notification sent to '.$value->device_id, 200);
-    } 
+    }
 } */
-            
-            
-            
+
+
+
         $ids = "";
 foreach ($allDevices as $div){
-$ids .= $div->device_id. "," ; 
+$ids .= $div->device_id. "," ;
 }
 $ids = substr($ids, 0, -1);
 $ids = trim($ids);
@@ -269,7 +269,7 @@ $ids = implode(", ", array($ids));
 $arr = explode('","', trim($ids, '"'));
 $ids_array = preg_split("/[,]/",$ids);
 
-      
+
                 $data = [
     'notification' => array(
     'title' => $request->subject,
@@ -297,7 +297,7 @@ $url = "https://fcm.googleapis.com/fcm/send";
         $response = curl_exec($curl);
         $json_obj   = json_decode($response);
         curl_close($curl);
-        
+
 
 /*
     if($json_obj->success != 1){
@@ -311,8 +311,8 @@ $url = "https://fcm.googleapis.com/fcm/send";
               //  }
         return $this->res(1, 'Notification sent', 200);
         }
-        
-    
+
+
     else
     {
         return $this->res(0, 'Operation Failed!', 401);
@@ -344,14 +344,14 @@ public function deleteAnnouncement(Request $request, $id){
 
 ////////////////// Booking Codes /////////////////////
 
-//list BookingCodes
+//list BookingCodes for admin
 public function listBookingCodes(Request $request){
-    /*
+
     if (auth()->user()->account_type != 'Admin') {
         return $this->res(0, 'Unauthorized!', 401);
-    }*/
+    }
 
-    $ann = BookingCodes::orderBy('id', 'desc')->take(20)->get();
+    $ann = BookingCodes::orderBy('id', 'desc')->take(100)->get();
 
   if($ann){
 
@@ -364,17 +364,56 @@ public function listBookingCodes(Request $request){
 
   }
 
+  //list user BookingCodes
+public function listUserBookingCodes(Request $request){
+
+    $ann = BookingCodes::Where('username', auth()->user()->email)
+    ->orderBy('id', 'desc')
+    ->take(100)
+    ->get();
+
+  if($ann){
+
+    return $this->res(1, $ann, 200);
+
+  }
+  else{
+    return $this->res(0, 'Record not found', 200);
+  }
+
+  }
+
+
 public function addBookingCode(Request $request){
   $validator = Validator::make($request->all(), [
-      'bookmaker' => 'required|string|max:200',
-      'code' => 'required|string|max:1000'
+      'bookmaker' => 'required|string|max:50',
+      'code' => 'required|string|max:50',
+      'odds' => 'required|string|max:50',
     ]);
-    
-    
-          
 
+
+
+
+
+    if(!Auth::check()){
+
+            return $this->res(0, 'You must be logged in', 401);
+        }
+
+        if (auth()->user()->account_type != 'Admin') {
+            // return $this->res(0, 'Unauthorized!', 401);
+            $today_date = date('Y-m-d');
+            $gamesPostedToday = BookingCodes::Where('date_posted', $today_date)
+            ->Where('username', auth()->user()->email);
+            if($gamesPostedToday->count() > 4){
+                return $this->res(0, 'Sorry, you cannot post more tha 5 codes daily.', 401);
+            }
+
+         }
+
+    $status = 1;
     if (auth()->user()->account_type != 'Admin') {
-        return $this->res(0, 'Unauthorized!', 401);
+        $status = 0;
     }
 
     $ann = BookingCodes::Where('status', 1)
@@ -399,14 +438,19 @@ if($ann != null){
 }*/
 //insert announcement.
 $add = BookingCodes::create([
-    'username' => auth()->user()->username,
+    'username' => auth()->user()->email,
     'bookmaker' => $request->bookmaker,
-    'code' => $request->code 
+    'code' => $request->code,
+    'odds' => $request->odds,
+    'date_posted' => date('Y-m-d'),
+    'status' => $status
         ]);
 
    if($add){
-        
-    return $this->res(1, 'Booking Code Added!', 200);
+    if (auth()->user()->account_type != 'Admin') {
+        return $this->res(1, 'Awesome! Booking code added but will be reviewed before it gets visible', 200);
+    }
+    return $this->res(1, 'Booking Code Posted!', 200);
     }
     else
     {
@@ -414,7 +458,7 @@ $add = BookingCodes::create([
     }
 }
 
-//delete question
+//delete booking
 public function deleteBookingCode(Request $request, $id){
 
     if (auth()->user()->account_type != 'Admin') {
@@ -434,7 +478,29 @@ public function deleteBookingCode(Request $request, $id){
       }
 
   }
-  
+
+  //approve booking
+public function approveBookingCode(Request $request, $id){
+
+    if (auth()->user()->account_type != 'Admin') {
+        return $this->res(0, 'Unauthorized!', 401);
+    }
+
+    $ann = BookingCodes::find($id);
+    $ann->status = 1;
+    $ann->save();
+
+     if($ann){
+        return $this->res(1, 'Booking Code Approved', 200);
+      }
+
+      else
+      {
+        return $this->res(0, 'Operation Failed!', 401);
+      }
+
+  }
+
 ////////////////// Booking Codes Ends /////////////////////
 
 
@@ -443,11 +509,11 @@ public function deleteBookingCode(Request $request, $id){
 
     public function pushNotification(Request $request)
     {
-        
+
         if (auth()->user()->account_type != 'Admin') {
         return $this->res(0, 'Unauthorized!', 401);
     }
-    
+
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
             'body' => 'required|string',
@@ -459,13 +525,13 @@ public function deleteBookingCode(Request $request, $id){
         }
 
         //$allDevices = CloudMessagingUsers::Where('status', 1)->get();
-        
+
 $allDevices = CloudMessagingUsers::Where('status', 1)->distinct()->get(['device_id']);
 
         if($allDevices != null){
         $ids = "";
 foreach ($allDevices as $div){
-$ids .= $div->device_id. "," ; 
+$ids .= $div->device_id. "," ;
 }
 $ids = substr($ids, 0, -1);
 $ids = trim($ids);

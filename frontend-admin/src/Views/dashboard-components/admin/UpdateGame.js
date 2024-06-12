@@ -82,9 +82,11 @@ const UpdateGame = () => {
                   setCountry(json.message.country)
                     setCountryCode(json.message.country_code)
                   setLeague(json.message.league)
-                        setHomeTeam(json.message.home_team)
-                        setAwayTeam(json.message.away_team)
-                        setPrediction(json.message.prediction)
+                  setHomeTeam(json.message.home_team)
+                  setAwayTeam(json.message.away_team)
+                  setHomeLogo(json.message.home_logo)
+                  setAwayLogo(json.message.away_logo)
+                  setPrediction(json.message.prediction)
                         setResult(json.message.result)
                         setGameDate(json.message.game_date)
                         setGameTime(json.message.game_time)
@@ -94,6 +96,7 @@ const UpdateGame = () => {
                         setStatus(json.message.status)
                         setWinOrLose(json.message.win_or_lose)
                         setIsPremium(json.message.is_premium)
+                        setIsFeatured(json.message.is_featured)
                     setGames(json.message);
 					if(json.message == ""){
 						{toast.error("Sorry, no game found. Check back later.")}
@@ -118,6 +121,8 @@ const UpdateGame = () => {
     const [league, setLeague] = useState(null)
     const [homeTeam, setHomeTeam] = useState(null)
     const [awayTeam, setAwayTeam] = useState(null)
+    const [homeLogo, setHomeLogo] = useState(null)
+    const [awayLogo, setAwayLogo] = useState(null)
     const [prediction, setPrediction] = useState(null)
     const [gameDate, setGameDate] = useState(null)
     const [gameTime, setGameTime] = useState(null)
@@ -127,6 +132,7 @@ const UpdateGame = () => {
     const [status_, setStatus] = useState(1)
     const [winOrLose, setWinOrLose] = useState(0)
     const [isPremium, setIsPremium] = useState(0)
+    const [isFeatured, setIsFeatured] = useState(0)
 
     
 
@@ -147,6 +153,8 @@ const UpdateGame = () => {
                         league: league,
                         home_team: homeTeam,
                         away_team: awayTeam,
+                        home_logo: homeLogo,
+                        away_logo: awayLogo,
                         prediction: prediction,
                         result: result,
                         game_date: gameDate,
@@ -156,7 +164,8 @@ const UpdateGame = () => {
                         odds: odds,
                         status: status_,
                         win_or_lose: winOrLose,
-                        is_premium: isPremium
+                        is_premium: isPremium,
+                        is_featured: isFeatured
             
              })
         };
@@ -205,6 +214,12 @@ return <>
   <input className='form-control m-2' placeholder='Away Team' value={awayTeam} onChange={e => setAwayTeam(e.target.value)}  />
   </div>
   <div class="col-6">
+  <input className='form-control m-2' placeholder='Home Logo' value={homeLogo} onChange={e => setHomeLogo(e.target.value)}  />
+  </div>
+  <div class="col-6">
+  <input className='form-control m-2' placeholder='Away Logo' value={awayLogo} onChange={e => setAwayLogo(e.target.value)}  />
+  </div>
+  <div class="col-6">
   <input className='form-control m-2' placeholder='Prediction' value={prediction} onChange={e => setPrediction(e.target.value)}  />
   </div>
   <div class="col-6">
@@ -243,6 +258,12 @@ return <>
     <select className='form-control m-2' onChange={e => setIsPremium(e.target.value)}>
     <option value={0}>Free</option>
     <option value={1}>Premium</option>
+    </select>
+  </div>
+  <div class="col-6">
+    <select className='form-control m-2' onChange={e => setIsFeatured(e.target.value)}>
+    <option value={0}>Not Featured</option>
+    <option value={1}>Featured</option>
     </select>
   </div>
   <div class="col-6">

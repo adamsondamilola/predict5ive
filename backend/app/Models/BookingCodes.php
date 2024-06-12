@@ -14,8 +14,10 @@ class BookingCodes extends Model
     protected $fillable = [
         'username',
         'bookmaker',
+        'date_posted',
         'code',
         'status',
+        'odds',
     ];
 /*
     protected $hidden = [
