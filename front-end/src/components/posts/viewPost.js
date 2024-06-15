@@ -83,7 +83,7 @@ const ViewPost = () => {
             
                     <div style={{display: isLoading? 'none' : 'block'}} className="bg-white dark:bg-gray-800">
                         <div className="mb-4">
-                            <label className="block text-gray-700 text-xl font-bold mb-2" htmlFor="username">
+                            <label className="block text-gray-700 dark:text-white text-xl font-bold mb-2">
                             {pageTile}
                             </label>
                             <img class="h-auto max-w-full rounded-lg" src={thumbNail} />

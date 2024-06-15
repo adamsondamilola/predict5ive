@@ -61,24 +61,29 @@ class PostController extends Controller
         if (auth()->user()->account_type != 'Admin') {
             return $this->res(0, 'Unauthorized!', 401);
         }
-        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->post_title)));
+        //$slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $request->post_title)));
+        $slug = Str::slug($request->post_title, '-');
         if($slug == null || $slug == ""){
             return $this->res(0, "Failed to post, try again", 422);
         }
         /*$posts = Posts::create(array_merge(
             $validator->validated()
         ));*/
-        Posts::create([
+        $createPost = Posts::create([
             'post_title' => $request->post_title,
             'post_content' => $request->post_content,
             'post_image' => $request->post_image,
-            'slug' => $request->slug,
-            'slug' => Str::slug($request->post_title, '-'),
+            'slug' => $slug,
             'username' => auth()->user()->username,
             'post_date' => $request->post_date,
             'status' => $request->status,
                 ]);
-        return $this->res(1, "New post posted   ", 200);
+
+                //send to telegram
+                $post_url = "https://predict5ive.com/post/".$createPost->id."/".$slug;
+                $this->TelegramBotMessenger('predict_5ive', $request->post_title."\n".$post_url);
+
+        return $this->res(1, "New post added   ", 200);
     }
 
     public function uploadContentThumbnail(Request $request)
