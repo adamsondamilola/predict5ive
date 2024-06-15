@@ -30,7 +30,7 @@ const BlogFooter = () => {
     </div>*/}
             <div className="uppercase pb-6">&copy; predict5ive.com</div>
         </div>
-        <AdsBanner1 />
+        {/*<AdsBanner1 />*/}
     </footer>
     )
 }

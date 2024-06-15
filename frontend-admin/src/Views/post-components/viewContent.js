@@ -19,7 +19,7 @@ const ViewContent = ({route}) => {
   const [shareUrl, setShareUrl] = useState(null)
     const [newslug, setNewslug] = useState(null)
     const {id} = useParams()
-    const {slug} = useParams()
+    const {slug} = useParams() 
     const {userId} = useParams()
     const [isLoading, setLoading] = useState(false)
     const [post, setPost] = useState([])

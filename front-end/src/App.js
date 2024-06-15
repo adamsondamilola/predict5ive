@@ -20,6 +20,9 @@ import BettingTips from './Views/games/bettingTips';
 import BettingRisks from './Views/games/bettingRisks';
 import PremiumGames from './Views/users/PredmiumGames';
 import PayLaterSub from './Views/users/PayLaterSub';
+import BookingCodes from './Views/games/bookingCodes';
+import SportsPredictionsTips from './Views/games/tips';
+import ViewPost from './components/posts/viewPost';
 
 function App() {
   return ( 
@@ -29,8 +32,11 @@ function App() {
     <Route path="/" element={<BlogLayout />}> 
     <Route path="/" element={<DashBoard />} />
     <Route path="/premium" element={<PremiumGames />} />
+    <Route path="/post/:id/:slug" element={<ViewPost />} />
+    <Route path="/predictions" element={<SportsPredictionsTips />} />
     <Route path="/pay-later-subscription" element={<PayLaterSub />} />
     <Route path="/post-game" element={<AddGame />} />
+    <Route path="/booking-codes" element={<BookingCodes />} />
     <Route path="/betting-tips" element={<BettingTips />} />
     <Route path="/risks-of-gambling" element={<BettingRisks />} />
     <Route path="/risks-of-betting" element={<BettingRisks />} />

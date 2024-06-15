@@ -12,6 +12,7 @@ use App\Models\Packages;
 use App\Models\Wallets;
 use App\Services\Response;
 use Illuminate\Support\Str;
+use App\Http\Controllers\Api\V1\TelegramBotMessengerController;
 use Validator;
 
 class PostController extends Controller
@@ -24,6 +25,14 @@ class PostController extends Controller
     {
         $res = new Response;
         return $res->res($status, $message, $code);
+    }
+
+    public function TelegramBotMessenger($chat_id, $msge)
+    {
+
+        $send = new TelegramBotMessengerController;
+        $send->sendTelegramMessage($chat_id, $msge);
+
     }
 
     public function newPost(Request $request){

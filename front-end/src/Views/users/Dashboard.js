@@ -4,6 +4,9 @@ import BlogTitle from "../../components/layouts/blog-title";
 import { useCookies } from 'react-cookie';
 import PredictGame from "../../components/games/predict-game";
 import Predictions from "../../components/games/predictions";
+import LatestPosts from "../../components/posts/latestPosts";
+import RandomPosts from "../../components/posts/randomPosts";
+import PredictionsSlider from "../../components/games/predictions-slider";
 
 export default function Home() {
     const [endPoint, setEndPoint] = useState(process.env.REACT_APP_MAIN_API)
@@ -90,16 +93,18 @@ export default function Home() {
     
     <section className="w-full flex flex-col items-center px-3">
     <BlogTitle/>
-    </section>
-    
-    
+    </section>    
 
         {/*Main posts*/}
     <section className="w-full md:w-2/3 flex flex-col items-center px-3">
 
+<PredictionsSlider/>
+<LatestPosts />
 
-    <PredictGame/>
-    <Predictions />
+    {/*<PredictGame/>*/}
+    {/*<Predictions />*/}
+
+    <RandomPosts/>
     
         </section>
 

@@ -13,6 +13,7 @@ use App\Models\Transactions;
 use App\Models\BookingCodes;
 use App\Services\Response;
 use App\Http\Controllers\Api\V1\TelegramBotMessengerController;
+use Carbon\Carbon;
 use Validator;
 
 // Get the currently authenticated user...
@@ -23,7 +24,7 @@ use Validator;
 class GamesController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['getGames', 'getGameById', 'oldGames', 'getGamesByTime', 'listBookingCodes']]);
+        $this->middleware('auth:api', ['except' => ['getGames', 'getGameById', 'oldGames', 'getGamesByTime', 'listBookingCodes', 'listRecentBookingCodes']]);
     }
 
     public function res($status, $message, $code)
@@ -39,6 +40,61 @@ class GamesController extends Controller
         $send->sendTelegramMessage($chat_id, $msge);
 
     }
+
+    public function importGame(Request $request)
+{
+
+    if (auth()->user()->account_type != 'Admin') {
+            return $this->res(0, 'Unauthorized!', 401);
+        }
+
+    $file = $request->file('file');
+    if($file){
+    $fileContents = file($file->getPathname());
+    }
+    else {
+        return $this->res(0, 'File not uploaded', 401);
+    }
+
+    try{
+
+        $count = 1;
+        foreach ($fileContents as $line) {
+        $data = str_getcsv($line);
+        //$count += 1;
+        if($data[0] != "country"){
+
+        Games::create([
+            'username' => auth()->user()->username,
+            'country' => $data[0],
+            'country_code' => $data[1],
+            'league' => $data[2],
+            'home_team' => $data[3],
+            'away_team' => $data[5],
+            'home_logo' => $data[4],
+            'away_logo' => $data[6],
+            'prediction' => $data[7],
+            'game_type' => $data[8],
+            'game_date' => $data[9],
+            'game_time' => $data[10],
+            'accuracy' => $data[15],
+            'odds' => $data[16],
+            'status' => $data[11],
+            'win_or_lose' => $data[12],
+            'is_premium' => $data[13],
+            'is_featured' => $data[14]
+            // Add more fields as needed
+        ]);
+        }
+    }
+    return $this->res(1, 'Upload was successful', 200);
+    }
+    catch(Exception $e){
+        return $this->res(0, 'Upload failed', 401);
+    }
+
+    //return redirect()->back()->with('success', 'CSV file imported successfully.');
+}
 
     public function newGame(Request $request){
     	$validator = Validator::make($request->all(), [
@@ -59,6 +115,7 @@ class GamesController extends Controller
             'status' => 'required|integer',
             'win_or_lose' => 'required|integer',
             'is_premium' => 'required|integer',
+            'is_featured' => 'integer|nullable'
         ]);
 
         if(Auth::check()){
@@ -91,7 +148,11 @@ class GamesController extends Controller
             $game .= "Country: ".$request->country."\n";
             $game .= "League: ".$request->league."\n";
             $game .= "Time: ".$request->game_time."(+1 GMT)\n";
-        $this->TelegramBotMessenger('predict_5ive', $game);
+
+            if($request->is_premium == 0){
+                // $this->TelegramBotMessenger('predict_5ive', $game);
+            }
+
         }
 
         return $this->res(1, "New game posted   ", 200);
@@ -116,6 +177,7 @@ class GamesController extends Controller
             'status' => 'required|integer',
             'win_or_lose' => 'required|integer',
             'is_premium' => 'required|integer',
+            'is_featured' => 'integer|nullable',
         ]);
         if(!Auth::check()){
             return $this->res(0, 'Not logged in!', 401);
@@ -144,6 +206,7 @@ class GamesController extends Controller
         $games->status = $request->status;
         $games->win_or_lose = $request->win_or_lose;
         $games->is_premium = $request->is_premium;
+        $games->is_featured = $request->is_featured;
         $games->save();
 
         //if game is update, send it to telegram as well
@@ -157,7 +220,9 @@ class GamesController extends Controller
             $game .= "Country: ".$request->country."\n";
             $game .= "League: ".$request->league."\n";
             $game .= "Time: ".$request->game_time."(+1 GMT)\n";
-        $this->TelegramBotMessenger('predict_5ive', $game);
+       if($request->is_premium == 0 && $request->status==1) {
+           //$this->TelegramBotMessenger('predict_5ive', $game);
+           }
         }
 
 
@@ -304,8 +369,13 @@ else{
             }
         }
         else if($time == "yesterday"){
+            $games = Games::Where('status', 1)->Where('game_date', $yesterday_date)->orderBy('game_date', 'desc')->get();
+
+            if(empty($games)) return $this->res(0, "Our experts are still working on new games. We will notify you!", 401);
+            return $this->res(1, $games, 200);
+        }
+        else if($time == "alltime"){
             $games = Games::Where('status', 1)->Where('is_premium', 0)->Where('game_date', $yesterday_date)->orderBy('game_date', 'desc')->get();
-            //$games = Games::Where('status', 1)->Where('game_date', $yesterday_date)->orderBy('game_date', 'desc')->get();
 
             if(empty($games)) return $this->res(0, "Our experts are still working on new games. We will notify you!", 401);
             return $this->res(1, $games, 200);
@@ -320,6 +390,27 @@ else{
         $today_date = date('Y-m-d');
         $yesterday_date = date('Y-m-d', time() - 60*60*24);
         $tomorrow_date = date('Y-m-d', time() + 60*60*24);
+
+        //show yesterday predictions to all
+        if($time == "yesterday"){
+            $games = Games::Where('status', 1)->Where('is_premium', 1)->Where('game_date', $yesterday_date)->orderBy('game_date', 'desc')->get();
+            if(empty($games)) return $this->res(0, "Our experts are still working on new games. We will notify you!", 401);
+            return $this->res(1, $games, 200);
+        }
+
+        //check if user package is active before showing predictions
+        if(auth()->user()->package_status != 0){
+            $date_time = auth()->user()->package."00:00:00";
+            $currentDateTime = Carbon::now(); //new DateTime();
+            $toDateTime = Carbon::parse($date_time);
+            $checkDateTime = $currentDateTime->lessThanOrEqualTo($toDateTime);
+            if(!$checkDateTime){
+                return $this->res(0, "Subscription expired", 401);
+            }
+    }
+    else {
+        return $this->res(0, "No active Subscription", 401);
+    }
 
         if($time == "today"){
             $Games = Games::Where('status', 1)->Where('is_premium', 1)->Where('game_date', $today_date);
@@ -336,11 +427,6 @@ else{
             else {
                 return $this->res(1, $games, 200);
             }
-        }
-        else if($time == "yesterday"){
-            $games = Games::Where('status', 1)->Where('is_premium', 1)->Where('game_date', $yesterday_date)->orderBy('game_date', 'desc')->get();
-            if(empty($games)) return $this->res(0, "Our experts are still working on new games. We will notify you!", 401);
-            return $this->res(1, $games, 200);
         }
         else{
             return $this->res(0, "Invalid command!", 401);
@@ -548,6 +634,26 @@ public function listBookingCodes(Request $request){
     ->Where('date_posted', '!=', null)->
     orderBy('id', 'desc')
     ->take(100)
+    ->get();
+
+  if($ann){
+
+    return $this->res(1, $ann, 200);
+
+  }
+  else{
+    return $this->res(0, 'Record not found', 200);
+  }
+
+  }
+
+      //list recent BookingCodes for all
+public function listRecentBookingCodes(Request $request){
+
+    $ann = BookingCodes::Where('status', 1)
+    ->Where('date_posted', '!=', null)->
+    orderBy('id', 'desc')
+    ->take(3)
     ->get();
 
   if($ann){

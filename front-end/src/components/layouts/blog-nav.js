@@ -1,5 +1,5 @@
 "use client";
-import { FaHome, FaPowerOff, FaSignInAlt, FaSignOutAlt, FaTelegram, FaTwitter, FaUserNinja } from "react-icons/fa";
+import { FaFootballBall, FaGolfBall, FaHome, FaIdeal, FaLightbulb, FaPowerOff, FaSignInAlt, FaSignOutAlt, FaTelegram, FaTwitter, FaUserNinja } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
@@ -75,15 +75,18 @@ const BlogNav = () => {
 
             <nav>
                 <ul className="flex items-center justify-between font-bold text-sm text-white uppercase no-underline">
-                <li><Link className="flex hover:text-gray-200 hover:underline px-2 animate-blink" to="/premium"> 
+                {/*<li><Link className="flex hover:text-gray-200 hover:underline px-2 animate-blink" to="/premium"> 
                 Premium
                 <span class="flex h-3 w-3 pointer-events-none">
   <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-pink-200 opacity-75"></span>
   <span class="relative inline-flex rounded-full h-3 w-3 bg-pink-500"></span>
 </span>
-                </Link></li>
-                <li style={{display: !userDetails? `block` : `none`}}><Link className="hover:text-gray-200 hover:underline px-4" to="/auth/login"> <FaSignInAlt /> </Link></li>
-                <li style={{display: userDetails? `block` : `none`}} onClick={logOut}><Link className="hover:text-gray-200 hover:underline px-4" to="/auth/login"> <FaPowerOff/> </Link></li>
+                </Link></li>*/}
+                <Link className="pl-6 mr-5" to="/">
+                <FaHome size={20}/>
+                </Link>
+                <li style={{display: !userDetails? `block` : `none`}}><Link className="hover:text-gray-200 hover:underline px-4" to="/auth/login"> <FaSignInAlt size={20}/> </Link></li>
+                <li style={{display: userDetails? `block` : `none`}} onClick={logOut}><Link className="hover:text-gray-200 hover:underline px-4" to="/auth/login"> <FaPowerOff size={20}/> </Link></li>
                 </ul>
             </nav>
 
@@ -101,16 +104,19 @@ const BlogNav = () => {
                     style={{ fontSize: 20 }}
                 />
                 </a>*/}
-                <Link className="pl-6" to="/">
-                <FaHome/>
-                </Link>
-                <a className="pl-6" href="https://t.me/predict_5ive">
+                
+                {/*<a className="pl-6" href="https://t.me/predict_5ive">
                 <FaTelegram/>
+                </a>*/}
+                <a className="pl-6 flex items-center" href="/predictions">                
+                <FaLightbulb/> <p className="ml-2">Our Tips</p>
                 </a>
+
                 <a className="pl-6" href="https://twitter.com/predict5ive">
                 
                 <FaTwitter/>
                 </a>
+
             </div>
         </div>
 <ToastContainer/>

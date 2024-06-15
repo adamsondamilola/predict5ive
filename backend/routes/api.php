@@ -49,6 +49,8 @@ Route::group([
 ], function ($router) {
     Route::post('/new_game', [GamesController::class, 'newGame']);
     Route::get('/bookings', [GamesController::class, 'listBookingCodes']);
+    Route::get('/recent_bookings', [GamesController::class, 'listRecentBookingCodes']);
+
     Route::post('/predict', [AiController::class, 'predictGameRequest']);
     Route::post('/update_game', [GamesController::class, 'updateGame']);
     Route::post('/update_game_outcome', [GamesController::class, 'updateGameOutcome']);
