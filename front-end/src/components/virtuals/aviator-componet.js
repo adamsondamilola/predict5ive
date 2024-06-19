@@ -6,7 +6,7 @@ import { useCookies } from 'react-cookie';
 import {Helmet} from "react-helmet";
 import { useParams } from "react-router";
 import dateTimeToDate from "../../Utilities/dateTimeToString";
-import { FaMinus, FaMinusCircle, FaPlusCircle } from "react-icons/fa";
+import { FaMinus, FaMinusCircle, FaPlusCircle, FaTimesCircle } from "react-icons/fa";
 import Images from "../../Utilities/Images";
 const AviatorComponent = () => {
     const [endPoint, setEndPoint] = useState(process.env.REACT_APP_MAIN_API)
@@ -22,7 +22,7 @@ const AviatorComponent = () => {
     const [postViewed, setPostViewed] = useState(false)
     const account_type = localStorage.getItem("account_type")
     const [userData, setUserData] = useState([])
-    const [showDetails, setShowDetails] = useState(false)
+    const [balance, setBalance] = useState(100)
     const [oddsHistory, setOddsHistory] = useState(["1.1", "1", "1.23", "3.22", "2.5", "4.6", "1.1", "1", "1.23", "3.22", "2.5", "4.6"])
     const [thumbNail, setThumbNail] = useState(null)
 
@@ -31,10 +31,11 @@ const AviatorComponent = () => {
     const [randomNumber2, setRandomNumber2] = useState(0)
     const [gameStarted, setGameStarted] = useState(false)
     const [gameEnded, setGameEnded] = useState(false)
-    const [cashOut, setCashOut] = useState(false)
-    const [hasStake, setHasStake] = useState(false)
+    //const [cashOut, setCashOut] = useState(false)
     const [stake, setStake] = useState(10)
-    const [currentOdds, setCurrentOdds] = useState(0)
+    //const [currentCashout, setCurrentCashout] = useState(0)
+    const [hasStake, setHasStake] = useState(false)
+
 
     const setRandomValues = () => {
 
@@ -72,8 +73,25 @@ const AviatorComponent = () => {
       const CounterAnimation = (props) => {
         const [count, setCount] = useState(props.initialValue)
         const [startCount, setStartCount] = useState(props.initialValue)
-const [currentOdds, setCurrentOdds] = useState(props.initialValue)
-const [cashOut, setCashOut] = useState(props.cashout)
+const [currentCashout, setCurrentCashout] = useState(stake)
+//const [cashOut, setCashOut] = useState(props.cashout)
+const [cashOut, setCashOut] = useState(0)
+
+const requestCashout = () => {
+    setCashOut(true)
+    setHasStake(false)
+    if(gameStarted){
+     setBalance(parseFloat(balance) + parseFloat(currentCashout))
+    }
+  }
+
+  const stakeAmount = () => {
+    if(!gameStarted && !hasStake){
+    setHasStake(true)
+    if(stake <= balance) setBalance(balance - stake)
+  }
+}
+
 let duration = 50; //1000 = 1 sec
 useEffect(()=>{
     let startValue = props.initialValue
@@ -84,11 +102,13 @@ useEffect(()=>{
     const counter = setInterval(()=>{
         startValue += 0.01
         setCount(startValue.toFixed(2))
-        if(!cashOut) {
-            setCurrentOdds(startValue.toFixed(2))
-        }
+        setCurrentCashout((parseFloat(stake) * parseFloat(startValue)).toFixed(2))
+        /*if(!cashOut) {
+            setCurrentCashout(startValue.toFixed(2))
+        }*/
         
-        if(startValue >= props.targetValue){   
+        if(startValue >= props.targetValue && gameStarted){   
+            setHasStake(false)
             clearInterval(counter)  
             setTimeout(()=>{
             //starting new game ---
@@ -101,13 +121,13 @@ useEffect(()=>{
         
         /*
         if(startValue < targetValue){
-            setCurrentOdds(startValue.toFixed(2))
+            setCurrentCashout(startValue.toFixed(2))
         } */
         
     }, interval)
     
     //set current odds for cash out
-    //setCurrentOdds(startValue)    
+    //setCurrentCashout(startValue)    
     return () => {
         clearInterval(counter)
         setRandomNumber1(0) //reset target value
@@ -115,6 +135,7 @@ useEffect(()=>{
     }
 }, [props.targetValue, props.initialValue, randomNumber0])
 
+//loading game
 useEffect(()=>{
     setGameEnded(false)
     setRandomValues()
@@ -123,22 +144,24 @@ useEffect(()=>{
         duration/(targetValue - initialValue)
     )*/
     
-    const interval = 1000;
+    const interval = 100;
     const counter_ = setInterval(()=>{
-        startValue += 10
+        startValue += 1
         setStartCount(startValue)
         if(startValue >= 100 && randomNumber1 > 0){
-            //game ended
             setCount(0)
+            setTimeout(()=>{
             setGameStarted(true)
             //setRandomValues()
             clearInterval(counter_)
+        }, 1000)
         }
     }, interval)
     return () => {
         clearInterval(counter_)               
     }
 }, [gameStarted])
+//loading game logic ends
 
 
 return (
@@ -156,18 +179,31 @@ return (
 
                 
             <section className="w-full md:w-2/3 flex flex-col items-center px-3">
-            <div className="w-full bg-white dark:bg-gray-800 dark:text-white shadow-md rounded px-8 pt-2 pb-4 mb-4">
+            <div className="w-full bg-white dark:bg-gray-800 dark:text-white shadow-md rounded px-8 pt-2 pb-4">
             {isLoading? <div className="text-purple-500 m-5">Please wait...</div> : '' }
             
             <div className="h-80 dark:bg-gray-800 dark:text-white flex flex-col items-center px-3">
 <div className="w-full">
 
 <div class="flex overflow-x-scroll pb-2 hide-scroll-bar no-scrollbar">
-        <div class="flex flex-nowrap lg:ml-40 md:ml-20 ml-10 ">
+        <div class="flex flex-nowrap lg:ml-20 md:ml-20 ml-10 ">
 {oddsHistory.map(x =>
         <div class="inline-block px-1">
         <div className="text-center max-w-xs overflow-hidden transition-shadow duration-300 ease-in-out shadow m-2 text-neutral-900 dark:text-neutral-300">
-            {x}x
+            <div className={parseFloat(x) < 2? 'text-red-500'
+            : parseFloat(x) > 1 && parseFloat(x) < 3? 'text-green-500' 
+            : parseFloat(x) > 2 && parseFloat(x) < 4? 'text-blue-500' 
+            : parseFloat(x) > 3 && parseFloat(x) < 5? 'text-orange-500' 
+            : parseFloat(x) > 4 && parseFloat(x) < 6? 'text-yellow-500' 
+            : parseFloat(x) > 5 && parseFloat(x) < 7? 'text-gray-500'
+            : parseFloat(x) > 6 && parseFloat(x) < 8? 'text-green-800' 
+            : parseFloat(x) > 7 && parseFloat(x) < 9? 'text-blue-800'
+            : parseFloat(x) > 8 && parseFloat(x) < 10? 'text-orange-800' 
+            : parseFloat(x) > 9 && parseFloat(x) < 11? 'text-yellow-800' 
+            : parseFloat(x) > 10 && parseFloat(x) < 12? 'text-gray-800'
+            : 'text-neutral-900'}>
+                {x}x
+                </div>
             </div>
             </div>
     )}
@@ -213,7 +249,7 @@ return (
 
     </div>
 
-
+<div className="mt-2">Balance: {balance.toFixed(2)}</div>
 </div>
 </div>
 
@@ -226,20 +262,30 @@ return (
     <button type="button" onClick={()=>updateStake('add')} className="flex w-full justify-end"> <FaPlusCircle/> </button>
     </div>
     <div className="rounded-lg dark:bg-gray-800 flex">
-    <div onClick={()=>addStake(10)} className="flex w-full justify-center bg-purple-800 dark:bg-gray-800 rounded-lg p-1 m-1"> 10 </div>
-    <div onClick={()=>addStake(50)} className="flex w-full justify-center bg-purple-800 dark:bg-gray-800 rounded-lg p-1 m-1"> 50 </div>
-    <div onClick={()=>addStake(100)} className="flex w-full justify-center bg-purple-800 dark:bg-gray-800 rounded-lg p-1 m-1"> 100 </div>
+    <div onClick={()=>addStake('10')} className="flex w-full justify-center bg-purple-800 dark:bg-gray-800 rounded-lg p-1 m-1"> 10 </div>
+    <div onClick={()=>addStake('50')} className="flex w-full justify-center bg-purple-800 dark:bg-gray-800 rounded-lg p-1 m-1"> 50 </div>
+    <div onClick={()=>addStake('100')} className="flex w-full justify-center bg-purple-800 dark:bg-gray-800 rounded-lg p-1 m-1"> 100 </div>
     </div>
     <div className="rounded-lg dark:bg-gray-800 flex">
-    <div onClick={()=>addStake(500)} className="flex w-full justify-center bg-purple-800 dark:bg-gray-800 rounded-lg p-1 m-1"> 500 </div>
-    <div onClick={()=>addStake(1000)} className="flex w-full justify-center bg-purple-800 dark:bg-gray-800 rounded-lg p-1 m-1"> 1K </div>
-    <div onClick={()=>addStake(2000)} className="flex w-full justify-center bg-purple-800 dark:bg-gray-800 rounded-lg p-1 m-1"> 2K </div>
+    <div onClick={()=>addStake('500')} className="flex w-full justify-center bg-purple-800 dark:bg-gray-800 rounded-lg p-1 m-1"> 500 </div>
+    <div onClick={()=>addStake('1000')} className="flex w-full justify-center bg-purple-800 dark:bg-gray-800 rounded-lg p-1 m-1"> 1K </div>
+    <div onClick={()=>addStake('x')} className="flex w-full justify-center items-center bg-purple-800 dark:bg-gray-800 rounded-lg p-1 m-1"> <FaTimesCircle/> </div>
     </div>
 </div>
-<div onClick={()=>requestCashout()} className="w-1/2 flex bg-green-600 border-white text-white items-center justify-center rounded-lg h-28"> 
+<div onClick={()=> gameStarted && hasStake? requestCashout() : stakeAmount() } 
+className={gameStarted && hasStake? "w-1/2 bg-green-600 flex border-white text-white items-center justify-center rounded-lg h-28"
+    : gameStarted? "w-1/2 bg-gray-400 flex border-white text-white items-center justify-center rounded-lg h-28"
+    : "w-1/2 bg-green-600 flex border-white text-white items-center justify-center rounded-lg h-28"
+}> 
+{gameStarted && hasStake? 
 <div className="text-xl font-bold text-center">Cash Out
-<div>{gameStarted? (parseFloat(stake) * parseFloat(currentOdds)).toFixed() : stake }</div>
+<div>{currentCashout}</div>
 </div>
+:
+<div className="text-xl font-bold text-center">{hasStake? 'Staked' : 'Stake'}
+<div>{stake}</div>
+</div>
+}
 </div>
 </div>
 </section>
@@ -282,16 +328,20 @@ return (
       */
 
       
-      const requestCashout = () => {
-        setCashOut(true)
-        if(gameStarted){
-        alert(currentOdds * stake)
-        }
-      }
+     
 
       const addStake = (x) =>{
-        let amount = stake+parseInt(x)
-        setStake(amount)      
+        if(!gameStarted){
+        let amount = '0'
+        if(x !== 'x'){
+            amount = stake+parseInt(x)
+        }
+        else amount = 10
+        setStake(amount) 
+        }   
+        /*else{
+            toast.error("You cannot play while game is live")
+        }*/          
         }
 
         useEffect(()=>{
@@ -313,7 +363,6 @@ return (
     initialValue={1}
     targetValue={randomNumber0}
     text={'x'}
-    cashout={cashOut}
     />
     )
 }

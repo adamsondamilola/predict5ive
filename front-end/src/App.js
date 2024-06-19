@@ -48,7 +48,7 @@ function App() {
     </Route>
 
     <Route path="/virtual" element={<BlogLayout />}> 
-    <Route path="/virtual/aviator" element={<Aviator />} />
+    <Route path="/virtual/rocket" element={<Aviator />} />
     </Route>
 
     <Route path="/auth" element={<AuthLayout />}> 
