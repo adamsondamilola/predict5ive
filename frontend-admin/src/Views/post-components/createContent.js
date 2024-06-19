@@ -333,6 +333,16 @@ console.log(formData)
                       </div>
                     </div>
                     <div class="mb-3 row">
+                      Or
+                    </div>
+                    <div class="mb-3 row">
+                      <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">Post Image URL</label>
+                      <div class="col-sm-8 col-md-9 col-lg-10">
+                        <input type="text" placeholder="https://" class="form-control" onChange={e => setPostImage(e.target.value)} value={postImage} />
+                      </div>
+                    </div>
+                    
+                    <div class="mb-3 row">
                       <label class="col-lg-2 col-md-3 col-sm-4 col-form-label">Title</label>
                       <div class="col-sm-8 col-md-9 col-lg-10">
                         <input type="text" class="form-control" onChange={e => setPostTitle(e.target.value)} value={postTitle} />

@@ -101,10 +101,7 @@ export default function Home() {
 <PredictionsSlider/>
 <LatestPosts />
 
-    {/*<PredictGame/>*/}
-    {/*<Predictions />*/}
-
-    <RandomPosts/>
+    {/*<RandomPosts/>*/}
     
         </section>
 

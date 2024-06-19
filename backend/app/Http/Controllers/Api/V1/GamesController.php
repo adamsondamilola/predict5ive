@@ -15,6 +15,7 @@ use App\Services\Response;
 use App\Http\Controllers\Api\V1\TelegramBotMessengerController;
 use Carbon\Carbon;
 use Validator;
+use Illuminate\Support\Str;
 
 // Get the currently authenticated user...
 //$username = Auth::user(); //auth()->user()->username; //
@@ -64,6 +65,7 @@ class GamesController extends Controller
         //$count += 1;
         if($data[0] != "country"){
 
+        $slug = Str::slug($data[3].' vs '.$data[5].' country '.$data[0], '-');
         Games::create([
             'username' => auth()->user()->username,
             'country' => $data[0],
@@ -82,7 +84,8 @@ class GamesController extends Controller
             'status' => $data[11],
             'win_or_lose' => $data[12],
             'is_premium' => $data[13],
-            'is_featured' => $data[14]
+            'is_featured' => $data[14],
+            'slug' => $slug
             // Add more fields as needed
         ]);
         }
@@ -117,7 +120,6 @@ class GamesController extends Controller
             'is_premium' => 'required|integer',
             'is_featured' => 'integer|nullable'
         ]);
-
         if(Auth::check()){
         if($request->username != auth()->user()->username){
             return $this->res(0, 'Invalid User!', 401);
@@ -134,8 +136,11 @@ class GamesController extends Controller
         if (auth()->user()->account_type != 'Admin') {
             return $this->res(0, 'Unauthorized!', 401);
         }
+        $slug = Str::slug($request->home_team.' vs '.$request->away_team.' country '.$request->country, '-');
+        $request->slug = $slug;
+        //return $this->res(1, $request->slug, 200);
         $games = Games::create(array_merge(
-            $validator->validated()
+            $validator->validated(), array('slug' => $slug)
         ));
 
         //if game is today, send it to telegram as well
@@ -375,7 +380,7 @@ else{
             return $this->res(1, $games, 200);
         }
         else if($time == "alltime"){
-            $games = Games::Where('status', 1)->Where('is_premium', 0)->Where('game_date', $yesterday_date)->orderBy('game_date', 'desc')->get();
+            $games = Games::Where('status', 1)->Where('is_premium', 0)->Where('result', '!=', null)->orderBy('game_date', 'desc')->take(50)->get();
 
             if(empty($games)) return $this->res(0, "Our experts are still working on new games. We will notify you!", 401);
             return $this->res(1, $games, 200);

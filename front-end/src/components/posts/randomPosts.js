@@ -64,11 +64,11 @@ return(
         <article key={x.id} className="max-w-none format lg:format-lg format-red">
                 <img src={x.post_image} 
                 alt="Post Image"
-                style={{margin: `auto`, width: `100%`, height: 220}}
+                style={{margin: `auto`, width: `100%`, height: 200}}
                 className="rounded-lg h-auto w-auto max-w-lg mx-auto"
                 />
                 <div className="flex flex-col justify-start p-4">
-                    <Link to={"/post/"+x.id+"/"+x.slug} className="text-1xl font-bold hover:text-gray-700 pb-4">{truncateString(x.post_title, 50)}</Link>
+                    <a href={"/post/"+x.id+"/"+x.slug} className="text-1xl font-bold hover:text-gray-700 pb-4">{truncateString(x.post_title, 50)}</a>
                      {/*<Link to={"/post/"+x.id+"/"+x.slug} className="pb-6">{truncateString(x.post_content, 100)}</Link>*/}
                 </div>
             </article>        

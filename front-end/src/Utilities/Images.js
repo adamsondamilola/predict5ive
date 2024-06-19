@@ -12,6 +12,12 @@ const gambling = require("../Images/gambling.jpeg");
 const odds = require("../Images/how-odds-work.jpeg");
 const betting = require("../Images/betting.png");
 const build_app_website_banner = require("../Images/build_app_website_banner.png");
+const rocket_animation = require("../Images/rocket-animation.gif")
+const blast = require("../Images/blast.gif")
+const galaxy = require("../Images/galaxy.gif")
 
 export default {loader, card_bg_1, card_bg_2, card_bg_3, card_bg_4, 
-    card_bg_5, card_bg_6, gambling, odds, betting, telegram, build_app_website_banner}
+    card_bg_5, card_bg_6, gambling, odds, betting, telegram, build_app_website_banner,
+    rocket_animation,
+    blast,
+    galaxy}

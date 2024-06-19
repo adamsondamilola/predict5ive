@@ -17,6 +17,7 @@ const AddGame = () => {
 	const [tomorrowGames, setTomorrowGames] = useState(false);
 	const [result, setResult] = useState(null);
 	const [gameDay, setGameDay] = useState(null);
+	
     const [userDetails, setUserDetails] = useState([])
     const [endPoint, setEndPoint] = useState(process.env.REACT_APP_MAIN_API)
     
@@ -113,6 +114,7 @@ const AddGame = () => {
       const [winOrLose, setWinOrLose] = useState(0)
     const [isPremium, setIsPremium] = useState(0)
     const [isFeatured, setIsFeatured] = useState(0)
+    const [slug, setSlug] = useState(null);
 
     
 

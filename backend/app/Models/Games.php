@@ -28,8 +28,10 @@ class Games extends Model
         'status',
         'win_or_lose',
         'is_premium',
+        'is_featured',
         'accuracy',
-        'odds'
+        'odds',
+        'slug'
     ];
 
     protected $hidden = [

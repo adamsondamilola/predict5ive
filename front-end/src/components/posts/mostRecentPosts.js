@@ -74,19 +74,14 @@ return(
         <article key={x.id} className="max-w-none format lg:format-lg format-red">
                 <img src={x.post_image} 
                 alt="Post Image"
-                style={{margin: `auto`, width: `100%`, height: 220}}
+                style={{margin: `auto`, width: `100%`, height: 200}}
                 className="rounded-lg h-auto w-auto max-w-lg mx-auto"
                 />
                 <div className="flex flex-col justify-start p-4">
-                    <Link to={"/post/"+x.id+"/"+x.slug} className="text-1xl font-bold hover:text-gray-700 pb-4">{truncateString(x.post_title, 50)}</Link>
-                     <Link to={"/post/"+x.id+"/"+x.slug} className="pb-6">{truncateString(x.post_content, 100)}</Link>
-                </div>
+                    <a href={"/post/"+x.id+"/"+x.slug} className="text-1xl font-bold hover:text-gray-700 pb-4">{truncateString(x.post_title, 100)}</a>
+                 </div>
             </article>
         
-        <div
-          class="border-t-2 border-neutral-100 px-6 py-3 dark:border-neutral-600 dark:text-neutral-50">
-          {x.post_date}
-        </div>
       </div>
        )}
 

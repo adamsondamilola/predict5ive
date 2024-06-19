@@ -92,8 +92,6 @@ return(
             See More
         </Link>
 
-        <MostRecentPostsPortrait/>
-
     </div>
 
     {/*<div className="w-full bg-white dark:bg-gray-800 dark:text-white shadow-md rounded px-8 pt-6 pb-8 mb-4">

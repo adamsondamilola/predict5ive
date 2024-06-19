@@ -69,6 +69,7 @@ class PostController extends Controller
         /*$posts = Posts::create(array_merge(
             $validator->validated()
         ));*/
+
         $createPost = Posts::create([
             'post_title' => $request->post_title,
             'post_content' => $request->post_content,
@@ -82,6 +83,24 @@ class PostController extends Controller
                 //send to telegram
                 $post_url = "https://predict5ive.com/post/".$createPost->id."/".$slug;
                 $this->TelegramBotMessenger('predict_5ive', $request->post_title."\n".$post_url);
+
+                //add post to sitesample.xml
+                $file = '/home/cprottoi/predict5ive.com/sitemap_init.xml';
+                $filename = basename($file);
+                    $xml = simplexml_load_file($file);
+                    $data = $xml->data;
+                    $url = $data->addChild('url');
+                    $url->addChild('loc', $post_url);
+                    $url->addChild('lastmod', $request->post_date);
+                    $xml->asXML($file);
+
+
+    $xml_ = file_get_contents($file); // or http://path.to/file.xml
+    $myXmlString = str_replace(['<data>', '</data>'], '', $xml_);
+    //update/overwrite main timestamp
+    $file_ = '/home/cprottoi/predict5ive.com/sitemap.xml';
+    file_put_contents($file_, $myXmlString);
+
 
         return $this->res(1, "New post added   ", 200);
     }
@@ -113,8 +132,8 @@ class PostController extends Controller
         {
             if ($files = $request->file('file'))
             {
-                $urlAppend = "/Users/abcde/Projects/Predict5ive_web/backend/storage/app/public/uploads/images/";
-                //$urlAppend = url('/')."/storage/app/uploads/images/";
+                //$urlAppend = "/Users/abcde/Projects/Predict5ive_web/backend/storage/app/public/uploads/images/";
+                $urlAppend = url('/')."/storage/app/uploads/images/";
                 //store file into uploads folder
                 $file = $request->file->store('public/uploads/images');
                 //$file = $request->file->store('uploads/images');
@@ -174,7 +193,7 @@ class PostController extends Controller
 if($posts->post_image != null)
 {
     //$destinationPath = '/home/planwvbx/influencer-api.planaa.com/storage/app/uploads/images';
-    $destinationPath = '/storage/app/uploads/images';
+    $destinationPath = '/home/cprottoi/predict5ive-api.cpromoter.com/storage/app/uploads/images';
     $filename = $posts->post_image;
     $filename = basename($filename);
     if(file_exists($filename))
@@ -256,7 +275,7 @@ if($posts->post_short_video != null){
         $today_date = date('Y-m-d');
         //$yesterday_date = d ;
 
-        $posts = Posts::Where('status', 1)->orderBy('post_date', 'desc')->take(20)->get();
+        $posts = Posts::Where('status', 1)->orderBy('id', 'desc')->take(20)->get();
         return $this->res(1, $posts, 200);
     }
 
@@ -265,7 +284,7 @@ if($posts->post_short_video != null){
         $today_date = date('Y-m-d');
         //$yesterday_date = d ;
 
-        $posts = Posts::Where('status', 1)->orderBy('post_date', 'desc')->take(6)->get();
+        $posts = Posts::Where('status', 1)->orderBy('id', 'desc')->take(6)->get();
         return $this->res(1, $posts, 200);
     }
 

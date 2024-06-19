@@ -192,16 +192,20 @@ return(
 {games.map(x =>
 <div className="w-full dark:bg-gray-800 dark:text-white md:w-1/2 flex flex-col items-center px-3">
 <div className="w-full shadow m-2">
+<a href={"/game/"+x.id+"/"+x.slug}>
 <div className="grid grid-cols-1 m-2">
     <p><b>{x.country} - {x.league}</b></p>
-    {x.game_type}
+    <div className="grid grid-cols-2 justify-start">
+    <span className="items-start">{x.game_type}</span>
+    <span className="text-right items-end">{x.game_time}</span>
+    </div>
 </div>
 
 <div class="flex flex-col dark:bg-gray-800 dark:text-white justify-center items-center h-40 bg-gray-100 gap-4">
 <div class="flex flex-wrap justify-center items-center gap-4 w-full">
 <div class="w-1/4 text-center px-4 leading-loose text-sm">
-    <div><img src={x.home_logo} width={45} height={45}/></div>
-    <div>{x.home_team}</div>
+    <div className=""><img src={x.home_logo} width={45} height={45}/></div>
+    <div className="">{x.home_team}</div>
 </div>
 <div class="w-1/4 text-center px-4 leading-loose text-sm">
     {x.result == '' || x.result == null? 'VS' : x.result}
@@ -213,7 +217,7 @@ return(
 </div>
 </div>
 
-<div class="flex flex-col justify-center items-center h-20 gap-4">
+{/*<div class="flex flex-col justify-center items-center h-20 gap-4">
 <div class="flex flex-wrap justify-center items-center gap-4 w-full">
 <div class="w-1/4 items-center text-center leading-loose text-sm">
     {x.game_time} | {x.accuracy}%
@@ -225,7 +229,8 @@ return(
 <div className={x.win_or_lose == 1? 'text-green-600 bold' : x.win_or_lose == 2? 'text-red-500' : ''}>{x.odds}</div> 
 </div>
 </div>
-</div>
+</div>*/}
+</a>
 </div>
 </div>
 )}

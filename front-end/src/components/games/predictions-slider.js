@@ -97,11 +97,11 @@ const PredictionsSlider = () =>{
 
 return(
   
-    <div className="text-white dark:bg-gray-800 dark:text-white rounded container mx-auto flex flex-wrap py-6 mb-5">
+    <div className="text-white dark:bg-gray-800 dark:text-white rounded container mx-auto flex flex-wrap py-6">
 
 <div className="w-full dark:bg-gray-800 dark:text-white flex flex-col items-center px-3">
 <ul
-  class="mb-5 flex list-none flex-row flex-wrap border-b-0 pl-0"
+  class="mb-3 flex list-none flex-row flex-wrap border-b-0 pl-0"
   role="tablist"
   data-te-nav-ref>
   <li onClick={()=>getGames('yesterday')} role="presentation">
@@ -139,24 +139,28 @@ return(
 <div className="w-64 h-58 max-w-xs overflow-hidden transition-shadow duration-300 ease-in-out shadow m-2 text-neutral-900 dark:text-neutral-300">
 <div className="grid grid-cols-1 m-2 text-white">
     <p><b>{x.country} - {x.league}</b></p>
-    {x.game_type}
+    <div className="grid grid-cols-2 justify-start">
+    <span className="items-start">{x.game_type}</span>
+    <span className="text-right items-end">{x.game_time}</span>
+    </div>
 </div>
 
-<div class="flex flex-col rounded-lg dark:bg-gray-800 dark:text-white justify-center items-center h-40 bg-gray-100 gap-4">
+<a href={"/game/"+x.id+"/"+x.slug}>
+<div class="flex flex-col rounded-lg dark:bg-gray-800 dark:text-white justify-center items-center h-28 bg-gray-100 gap-4">
 <div class="justify-start items-center w-full">
 <div class="flex text-center px-4 leading-loose text-sm">
     <div><img src={x.home_logo} width={23} height={23}/></div>
     <div className="ml-3">{x.home_team}</div>
 </div>
 <div class="text-center px-4 leading-loose text-sm">
-    {x.result == '' || x.result == null? x.game_time +" :: "+ x.prediction : x.result}
+    {x.result == '' || x.result == null? '' : x.result}
     </div>
     <div class="flex items-center text-center px-4 leading-loose text-sm">
         <div><img src={x.away_logo} width={23} height={23}/></div>
         <div className="ml-3">{x.away_team}</div>
         </div>
 </div>
-</div>
+</div></a>
 </div>
 </div>
 )}
