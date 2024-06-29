@@ -154,11 +154,29 @@ class GamesController extends Controller
             $game .= "League: ".$request->league."\n";
             $game .= "Time: ".$request->game_time."(+1 GMT)\n";
 
-            if($request->is_premium == 0){
-                // $this->TelegramBotMessenger('predict_5ive', $game);
-            }
+            //if($request->is_premium == 0){
+                $this->TelegramBotMessenger('predict_5ive', $game);
+            //}
 
         }
+
+        $post_url = "https://predict5ive.com/game/".$games->id."/".$slug;
+        //add game url to sitesample.xml
+                $file = '/home/cprottoi/predict5ive.com/sitemap_init.xml';
+                $filename = basename($file);
+                    $xml = simplexml_load_file($file);
+                    $data = $xml->data;
+                    $url = $data->addChild('url');
+                    $url->addChild('loc', $post_url);
+                    $url->addChild('lastmod', $request->game_date);
+                    $xml->asXML($file);
+
+
+    $xml_ = file_get_contents($file); // or http://path.to/file.xml
+    $myXmlString = str_replace(['<data>', '</data>'], '', $xml_);
+    //update/overwrite main timestamp
+    $file_ = '/home/cprottoi/predict5ive.com/sitemap.xml';
+    file_put_contents($file_, $myXmlString);
 
         return $this->res(1, "New game posted   ", 200);
     }

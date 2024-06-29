@@ -30,17 +30,15 @@ const AviatorComponent = () => {
     const [randomNumber1, setRandomNumber1] = useState(0)
     const [randomNumber2, setRandomNumber2] = useState(0)
     const [gameStarted, setGameStarted] = useState(false)
-    const [gameEnded, setGameEnded] = useState(false)
     //const [cashOut, setCashOut] = useState(false)
     const [stake, setStake] = useState(10)
     //const [currentCashout, setCurrentCashout] = useState(0)
     const [hasStake, setHasStake] = useState(false)
+    const [gameEnded, setGameEnded] = useState(false)
 
 
     const setRandomValues = () => {
-
         let value1 = RandomNumberGen()
-
         let min2 = 0
         let max2 = 99
         let value2 = Math.floor(Math.random() * max2) + min2
@@ -92,52 +90,11 @@ const requestCashout = () => {
   }
 }
 
-let duration = 50; //1000 = 1 sec
-useEffect(()=>{
-    let startValue = props.initialValue
-    /*const interval = Math.floor(
-        duration/(targetValue - initialValue)
-    )*/
-    const interval = duration;
-    const counter = setInterval(()=>{
-        startValue += 0.01
-        setCount(startValue.toFixed(2))
-        setCurrentCashout((parseFloat(stake) * parseFloat(startValue)).toFixed(2))
-        /*if(!cashOut) {
-            setCurrentCashout(startValue.toFixed(2))
-        }*/
-        
-        if(startValue >= props.targetValue && gameStarted){   
-            setHasStake(false)
-            clearInterval(counter)  
-            setTimeout(()=>{
-            //starting new game ---
-            //game ended
-            setStartCount(0)
-            setGameStarted(false)
-        }, 3000)
-        }
-        //starting new game ---
-        
-        /*
-        if(startValue < targetValue){
-            setCurrentCashout(startValue.toFixed(2))
-        } */
-        
-    }, interval)
+const gameRunningMethod = () => {
     
-    //set current odds for cash out
-    //setCurrentCashout(startValue)    
-    return () => {
-        clearInterval(counter)
-        setRandomNumber1(0) //reset target value
+}
 
-    }
-}, [props.targetValue, props.initialValue, randomNumber0])
-
-//loading game
-useEffect(()=>{
-    setGameEnded(false)
+const gameStartingMethod = () => {
     setRandomValues()
     let startValue = props.initialValue
     /*const interval = Math.floor(
@@ -152,7 +109,6 @@ useEffect(()=>{
             setCount(0)
             setTimeout(()=>{
             setGameStarted(true)
-            //setRandomValues()
             clearInterval(counter_)
         }, 1000)
         }
@@ -160,8 +116,61 @@ useEffect(()=>{
     return () => {
         clearInterval(counter_)               
     }
-}, [gameStarted])
+}
+
+//loading game
+useEffect(()=>{
+    if(!gameStarted) gameStartingMethod()
+}, [gameStarted, gameEnded])
 //loading game logic ends
+
+
+useEffect(()=>{
+if(gameStarted){
+    let startValue = props.initialValue
+    /*const interval = Math.floor(
+        duration/(targetValue - initialValue)
+    )*/
+    let duration = 50; //1000 = 1 sec
+    const interval = duration;
+    const counter = setInterval(()=>{
+        startValue += 0.01
+        setCount(startValue.toFixed(2))
+        if(hasStake) setCurrentCashout((parseFloat(stake) * parseFloat(startValue)).toFixed(2))
+        /*if(!cashOut) {
+            setCurrentCashout(startValue.toFixed(2))
+        }*/
+        
+        if(parseFloat(startValue) >= parseFloat(props.targetValue) && gameStarted){   
+            setHasStake(false)
+            clearInterval(counter) 
+            setTimeout(()=>{
+                setGameEnded(true)
+            //starting new game ---
+            setStartCount(0)
+            setGameStarted(false)
+            //setGameEnded(false)
+        }, 3000)
+
+        }
+        /*
+        if(parseFloat(startValue) >= parseFloat(props.targetValue)) {
+            setGameEnded(true)
+         }*/
+        //starting new game ---
+                
+    }, interval)
+    
+    //set current odds for cash out
+    //setCurrentCashout(startValue)    
+    return () => {
+        clearInterval(counter)        
+        setRandomNumber1(0) //reset target value
+
+    }
+}
+}, [props.targetValue, props.initialValue])
+        
 
 
 return (
@@ -211,7 +220,7 @@ return (
     </div>
 
     <div 
-    style={{backgroundImage: `url(${gameStarted? Images.rocket_animation : gameEnded? Images.blast : Images.galaxy})`, backgroundRepeat: `no-repeat`, backgroundSize: `cover`}}
+    style={{backgroundImage: `url(${count < 1 || !gameStarted? Images.galaxy : gameEnded? Images.blast : gameStarted? Images.rocket_animation : Images.galaxy})`, backgroundRepeat: `no-repeat`, backgroundSize: `cover`}}
     class="flex flex-col rounded-lg dark:bg-gray-800 dark:text-white justify-center items-center h-60 bg-gray-100 gap-4">
 
 {gameStarted? <div className="w-full flex flex-nowrap text-5xl font-bold justify-center text-center">
@@ -344,9 +353,10 @@ return (
         }*/          
         }
 
-        useEffect(()=>{
+        /*useEffect(()=>{
             setRandomValues()
-        },[randomNumber0])
+        },[randomNumber0])*/
+
 
       /*
     useEffect(() => {
