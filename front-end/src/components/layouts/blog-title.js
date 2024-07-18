@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 
 const BlogTitle = () => {
+
     return (
 <div>
         <div className="flex flex-col items-center py-12 mt-10">

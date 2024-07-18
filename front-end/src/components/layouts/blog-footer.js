@@ -19,6 +19,9 @@ const BlogFooter = () => {
                 &#8594;
             </button>
         </div>*/}
+        
+        <div id="container-4a5201007af178eab2fd18e685912bcc"></div>
+
         <div className="w-full container mx-auto flex flex-col items-center">
 {/* <b>Disclaimer:</b><p className="items-center text-center">Predictions are not 100% accurrate and should not be relied on at all times.</p>*/}
             <div className="flex flex-col md:flex-row text-center md:text-left md:justify-between py-6">

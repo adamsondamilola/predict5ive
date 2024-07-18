@@ -3,10 +3,10 @@ import BlogTitle from "../layouts/blog-title";
 import { toast } from "react-toastify";
 import { ToastContainer } from 'react-toastify';
 import { useCookies } from 'react-cookie';
-import Images from "../../Utilities/Images";
 import {Helmet} from "react-helmet";
 import { useParams } from "react-router";
 import MostRecentPosts from "./mostRecentPosts";
+import TruncatePost from "../../Utilities/TruncatePost";
 const ViewPost = () => {
     const [endPoint, setEndPoint] = useState(process.env.REACT_APP_MAIN_API)
     const [cookies, setCookie, removeCookie] = useCookies(["token"]);
@@ -19,7 +19,7 @@ const ViewPost = () => {
     const [newslug, setNewslug] = useState(null)
     const [post, setPost] = useState([])
     const [postViewed, setPostViewed] = useState(false)
-    const [editPost, setEditPost] = useState(false)
+    const [viewMore, setViewMore] = useState(true)
     const account_type = localStorage.getItem("account_type")
     const [userData, setUserData] = useState([])
     const [showDetails, setShowDetails] = useState(false)
@@ -99,11 +99,18 @@ const ViewPost = () => {
                         </div>
                         <div className="mb-4">
                         <div style={{whiteSpace: "pre-wrap"}}>
-                        {post.post_content}
+                        {viewMore? TruncatePost(post.post_content) : post.post_content}
                         </div>
                         </div>
+
+                        <div style={{display: viewMore? 'block' : 'none'}} className="mb-4">
+<a onClick={()=>setViewMore(false)} href={process.env.REACT_APP_ADSTERRA} target="_blank" rel="nofollow" className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+  Read More
+    </a>
+
+                        </div>
                         
-                        
+                        <div id="container-4a5201007af178eab2fd18e685912bcc"></div>           
 
                     </div>
                 </div>

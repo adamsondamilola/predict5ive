@@ -1,5 +1,5 @@
 "use client";
-import { FaFootballBall, FaGolfBall, FaHome, FaIdeal, FaLightbulb, FaPowerOff, FaSignInAlt, FaSignOutAlt, FaTelegram, FaTwitter, FaUserNinja } from "react-icons/fa";
+import { FaAndroid, FaFootballBall, FaGolfBall, FaHome, FaIdeal, FaLightbulb, FaPowerOff, FaSignInAlt, FaSignOutAlt, FaTelegram, FaTwitter, FaUserNinja } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
@@ -112,6 +112,10 @@ const BlogNav = () => {
                 <FaLightbulb/> <p className="ml-2">Our Tips</p>
                 </a>
 
+                <a className="pl-6" href="https://drive.google.com/file/d/1CvgBBEOWBh58ZZnT9oG0Oh-1Id8WYYTZ/view?usp=sharing" target="_blank">
+                
+                <FaAndroid/>
+                </a>
                 <a className="pl-6" href="https://twitter.com/predict5ive">
                 
                 <FaTwitter/>

@@ -143,6 +143,7 @@ const ViewGame = () => {
 </div>
 </div>
 
+<div id="container-4a5201007af178eab2fd18e685912bcc"></div>
                 </div>
 <PredictionsSlider />
 </section>

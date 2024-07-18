@@ -94,19 +94,19 @@ return(
 
     </div>
 
-    {/*<div className="w-full bg-white dark:bg-gray-800 dark:text-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <p className="text-xl font-semibold pb-5">Download App</p>
-        <p>Download our sport prediction app on Google Play Store. Its absolutely free.</p>
+    <div className="w-full bg-white dark:bg-gray-800 dark:text-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <p className="text-xl font-semibold pb-5">Download App : Android</p>
+        <p>Click the image below to download and install Predict 5ive Android app on your device. Its absolutely free.</p>
         <p>
-            <a href="https://play.google.com/store/apps/details?id=com">
-            <img src={""} 
+            <a href="https://drive.google.com/file/d/1CvgBBEOWBh58ZZnT9oG0Oh-1Id8WYYTZ/view?usp=sharing" target="_blank">
+            <img src={"https://play-lh.googleusercontent.com/KHnReEHYCmXBuP5e3BV3zUgQndB0SDU7HIERXFQ8snC5qds9W737RighTax1yTaVyUAh"} 
                 alt="App Image"
-                style={{margin: `auto`, width: 300, height: 300}}
+                style={{margin: `auto`, width: 300, height: 150}}
                 className="rounded-lg h-auto w-auto max-w-lg mx-auto"
                 />
             </a>
         </p>
-    </div>*/}
+    </div>
 
     <div className="w-full bg-white dark:bg-gray-800 dark:text-white shadow flex flex-col my-4 p-6">
         <p className="text-xl font-semibold pb-5">Featured Posts</p>
